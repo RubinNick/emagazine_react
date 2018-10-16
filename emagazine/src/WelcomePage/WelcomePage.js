@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { userActions } from '../_actions';
 
-class HomePage extends React.Component {
+class WelcomePage extends React.Component {
     componentDidMount() {
         //this.props.dispatch(userActions.getAll());
     }
@@ -15,7 +15,7 @@ class HomePage extends React.Component {
             <div className="col-md-6 col-md-offset-3">
                 <h1>Hi,  
                 {user ?
-                    user.firstName :
+                    user.FirstName :
                     "Unknown user"
                 }
                 !</h1>
@@ -24,7 +24,7 @@ class HomePage extends React.Component {
                     {
                         localStorage.getItem('user') === null ?
                         <Link to="/login">Login</Link> :
-                        <Link onClick={this.props.dispatch(userActions.logout())}> Logout </Link>
+                        <button onClick={ () => this.props.dispatch(userActions.logout()) }> Logout </button>
                     }                    
                 </p>
             </div>
@@ -33,13 +33,12 @@ class HomePage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { users, authentication } = state;
+    const { authentication } = state;
     const { user } = authentication;
     return {
-        user,
-        users
+        user
     };
 }
 
-const connectedHomePage = connect(mapStateToProps)(HomePage);
-export { connectedHomePage as HomePage };
+const connectedWelcomePage = connect(mapStateToProps)(WelcomePage);
+export { connectedWelcomePage as WelcomePage };

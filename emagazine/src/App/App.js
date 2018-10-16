@@ -5,8 +5,10 @@ import { connect } from 'react-redux';
 import { history } from '../_helpers';
 import { alertActions } from '../_actions';
 import { PrivateRoute, AdminRoute } from '../_components';
-import { HomePage } from '../HomePage';
+
+import { WelcomePage } from '../WelcomePage';
 import { LoginPage } from '../LoginPage';
+import { AdminPage } from '../AdminPage';
 
 class App extends React.Component {
     constructor(props) {
@@ -30,9 +32,12 @@ class App extends React.Component {
                         }
                         <Router history={history}>
                             <div>
-                                <Route exact path="/" component={HomePage} />
+                                <Route exact path="/" component={WelcomePage} />
+                                {//need to change it to homepage
+                                //<Route path="/home" component={HomePage} />
+                                }
                                 <Route path="/login" component={LoginPage} />
-                                <AdminRoute path='/adminPage' />
+                                <AdminRoute exact path='/admin' component={AdminPage} />
                             </div>
                         </Router>
                     </div>

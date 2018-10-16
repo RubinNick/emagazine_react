@@ -1,5 +1,7 @@
 import { authHeader, configBackend } from '../_helpers/index';
 import fetch from 'cross-fetch';
+//need to fix logout
+import { history } from '../_helpers/index';
 
 export const userService = {
     login,
@@ -18,7 +20,7 @@ function login(username, password){
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        'data': "grant_type=password&password=" + password + "&username=" + username
+        'body': "grant_type=password&password=" + password + "&username=" + username
     };
     return fetch(configBackend.apiUrl + '/token', requestOptions)
         .then(handleResponse, handleError)
@@ -40,24 +42,18 @@ function logout() {
     localStorage.removeItem('user');
 }
 
+function redirectToWelcome(){
+    history.push('/');
+}
+
 function getAll() {
     console.log('into get all method')
-    let user = JSON.parse(localStorage.getItem('user'));
-    let header = new Headers({
-        'Authorization': 'Bearer ' + user.token,
-        'Access-Control-Allow-Origin': '*', 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        });
     const requestOptions = {
-        method: 'Get',
-        mode: 'cors',
-        headers: header,
-        //authHeader(),
-        //body: JSON.stringify({}),
+        method: 'GET',
+        headers: authHeader()
     };
 
-    return fetch(configBackend.apiUrl + '/api/Account/Get', requestOptions).then(handleResponse, handleError);
+    return fetch(configBackend.apiUrl + '/api/Account/GetAll', requestOptions).then(handleResponse, handleError);
 }
 
 function getById(id) {
@@ -66,7 +62,13 @@ function getById(id) {
         headers: authHeader()
     };
  
-    return fetch(configBackend.apiUrl + '/users/' + id, requestOptions).then(handleResponse, handleError);
+    return fetch(configBackend.apiUrl + '/api/Account/Get/' + id, requestOptions)
+        .then(handleResponse, handleError)
+        .then(userInfo => {
+            console.log(userInfo); 
+            
+            return userInfo;
+        });
 }
 
 function register(user) {
@@ -110,8 +112,17 @@ function handleResponse(response) {
                 resolve();
             }
         } else {
-            // return error message from response body
-            response.text().then(text => reject(text));
+            //response message
+            var msg = response.text();
+            //check for unauthorize
+            if(response.status === 401){
+                msg.then(text => alert(text));
+                logout();
+                redirectToWelcome();
+            }else{
+                // return error message from response body
+            msg.then(text => reject(text));
+            }                                     
         }
     });
 }
