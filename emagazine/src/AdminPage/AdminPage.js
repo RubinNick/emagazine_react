@@ -41,6 +41,8 @@ class AdminPage extends React.Component {
                                 <Button bsStyle="info" style={{marginLeft: '20px'}} onClick={(event) => this.getUserInfo(event, user.Id)}> Show full info </Button>
                                 <Button bsStyle="danger" style={{marginLeft: '20px'}}> Delete user </Button>
                                 </h4>
+                                {userInfo.loading && <em>Loading user info...</em>}
+                                {userInfo.error && <span className="text-danger">ERROR: {users.error}</span>}
                                 {userInfo && 
                                     <h5>
                                         {userInfo.FirstName + ' ! ' + userInfo.LastName}
