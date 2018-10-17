@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { userActions } from '../_actions';
+import { userActions } from '../../_actions';
 
 class WelcomePage extends React.Component {
     componentDidMount() {
@@ -10,16 +10,16 @@ class WelcomePage extends React.Component {
     }
 
     render() {
-        const { user } = this.props;
+        const { user } = this.props;       
         return (
             <div className="col-md-6 col-md-offset-3">
-                <h1>Hi,  
+                <h1>Hi  
                 {user ?
-                    user.FirstName :
-                    "Unknown user"
+                    ", " + user.Username :
+                    ", Unknown user"
                 }
                 !</h1>
-                <p>Welcome to the "secret shop"</p>
+                <p>Welcome to our shop</p>
                 <p>
                     {
                         localStorage.getItem('user') === null ?
