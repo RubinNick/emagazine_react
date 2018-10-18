@@ -1,1 +1,1 @@
-export * from './HeaderAppBar'
+export * from './HeaderAppBar';

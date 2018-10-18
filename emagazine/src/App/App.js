@@ -8,9 +8,9 @@ import { PrivateRoute, AdminRoute } from '../_components';
 
 import { HeaderAppBar } from '../components/Header'
 
-import { WelcomePage } from '../components/WelcomePage';
-import { LoginPage } from '../components/LoginPage';
-import { AdminPage } from '../components/AdminPage';
+import { WelcomePage } from '../components/Pages/WelcomePage';
+import { LoginPage } from '../components/Pages/LoginPage';
+import { AdminPage } from '../components/Pages/AdminPage';
 
 class App extends React.Component {
     constructor(props) {

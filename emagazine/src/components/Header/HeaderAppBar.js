@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
 import { history } from '../../_helpers';
-
+import { userActions } from '../../_actions';
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,7 +17,7 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
+import ShoppingCart from "@material-ui/icons/ShoppingCart";
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 
@@ -122,9 +123,22 @@ class HeaderAppBar extends React.Component {
     this.setState({ navMenuAnchorEl: null });
   };
 
+  handleLoggingIn = () => {
+    if(localStorage.getItem("user") === null){
+      return(<MenuItem onClick={() => history.push("/login")}> Login </MenuItem>);
+    }else{
+      return(
+        <div>
+          <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+          <MenuItem onClick={this.handleClose}>My account</MenuItem>
+          <MenuItem onClick={ () => {history.push("/"); this.props.dispatch(userActions.logout())} }> Logout </MenuItem>
+        </div>);
+    }
+  }
+
   render() {
     const { anchorEl, mobileMoreAnchorEl, navMenuAnchorEl } = this.state;
-    const { classes } = this.props;
+    const { classes, user } = this.props;
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const isNavMenuOpen = Boolean(navMenuAnchorEl);
@@ -137,8 +151,7 @@ class HeaderAppBar extends React.Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-        <MenuItem onClick={this.handleClose}>My account</MenuItem>
+        { this.handleLoggingIn() }
       </Menu>
     );
 
@@ -153,10 +166,10 @@ class HeaderAppBar extends React.Component {
         <MenuItem>
           <IconButton color="inherit">
             <Badge className={classes.margin} badgeContent={4} color="secondary">
-              <MailIcon />
+              <ShoppingCart />
             </Badge>
           </IconButton>
-          <p>Messages</p>
+          <p>Shopping cart</p>
         </MenuItem>
         <MenuItem>
           <IconButton color="inherit">
@@ -196,9 +209,11 @@ class HeaderAppBar extends React.Component {
             <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer" onClick={this.handleNavMenuOpen}>
               <MenuIcon />
             </IconButton>
-            <Typography className={classes.title} variant="h6" color="inherit" noWrap onClick={ () => (history.push('/')) }>
-              E-magazine
-            </Typography>
+            <IconButton color="inherit">
+              <Typography className={classes.title} variant="h3" color="inherit" noWrap onClick={ () => (history.push('/')) }>
+                E-magazine
+              </Typography>
+            </IconButton>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
@@ -217,7 +232,7 @@ class HeaderAppBar extends React.Component {
                 {//need to pass here count of mails (wrap it to show count)               
                  //<Badge className={classes.margin} badgeContent={0} color="secondary">
                 }
-                  <MailIcon />
+                  <ShoppingCart /> 
                 {//</Badge>
                 }
               </IconButton>
@@ -258,7 +273,11 @@ HeaderAppBar.propTypes = {
 };
 
 function mapStateToProps(state) {
-
+  const { authentication } = state;
+  const { user } = authentication;
+  return {
+      user,
+  };
 }
 
 const connectedHeaderAppBar = connect(mapStateToProps)(withStyles(styles)(HeaderAppBar));
