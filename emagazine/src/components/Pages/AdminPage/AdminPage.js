@@ -7,16 +7,35 @@ import { userActions } from '../../../_actions';
 
 import Button from '@material-ui/core/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
+    root: {
+        width: '100%',
+      },
+    heading: {
+        fontSize: theme.typography.pxToRem(15),
+        fontWeight: theme.typography.fontWeightRegular,
+    },
     title: {
         display: 'none',
         [theme.breakpoints.up('sm')]: {
           display: 'block',
         },
-      }
+    },
+    ul: {
+        listStyleType: 'none'
+    },
+    button: {
+        float: 'right'
+    },
+    expansionPanel:{
+    }
 })
 
 class AdminPage extends React.Component {
@@ -27,32 +46,10 @@ class AdminPage extends React.Component {
         this.getUserRole = this.getUserRole.bind(this);
     }
 
-    state = {
-        fullInfoToggle: null
+    handleDeleteDialogOpen = () => {
     }
 
-    handleFullInfoOpen = event => {
-        this.setState({
-            fullInfoToggle: event.currentTarget
-        })
-    }
-
-    handleFullInfoClose = () => {
-        this.setState({
-            fullInfoToggle: null
-        })
-    }
-
-    handleClickDialogOpen = () => {
-        this.setState({
-            openAlertDialog: true
-        })
-    }
-
-    handleClickDialogClose = () => {
-        this.setState({
-            openAlertDialog: false
-        })
+    handleDeleteDialogClose = () => {
     }
 
     getUserTradingRole(user) {
@@ -84,12 +81,11 @@ class AdminPage extends React.Component {
     }
 
     render() {
-        const { fullInfoToggle } = this.state;
+        //const { fullInfoToggle } = this.state;
         const { user, users, classes } = this.props;
-        const isFullInfoOpen = Boolean(fullInfoToggle);
 
         return (
-            <div className="col-md-6 col-md-offset-3">
+            <div className={classes.root}>
                 <Typography className={classes.title} variant="h1" color="inherit" noWrap>
                     Hi, {user.Username}!
                 </Typography>
@@ -101,43 +97,48 @@ class AdminPage extends React.Component {
                 <Typography className={classes.title} variant="h3" color="inherit" noWrap>
                     List of all registred users: 
                 </Typography>
+                <p></p>
                 {users.loading && <em>Loading users...</em>}
                 {users.error && "12321321312321321321321323213213213"
                 }
                 {users.items &&
-                    <ul>
+                    <ul className={classes.ul}>
                         {users.items.map((user, index) =>
                             <li key={index} data-id={user.Id} style={{width: '1000px'}}>
-                                <Typography className={classes.title} variant="h4" color="inherit" noWrap>
-                                {user.FirstName + ' ' + user.LastName}
-                                <Button variant="contained" color="primary" className={classes.button} style={{margin: '15px'}}>
-                                    <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-                                        Show full info 
-                                    </Typography>
-                                </Button>
-                                {user.Id === JSON.parse(localStorage.getItem("user")).Id ?
-                                    <Button variant="contained" color="secondary" className={classes.button} style={{margin: '15px'}} disabled title="Can't delete you">
-                                        <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-                                            Delete user 
+                                <ExpansionPanel classes={classes.expansionPanel}>
+                                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                                        <div></div>
+                                        <Typography className={classes.title} variant="h4" color="inherit" noWrap>
+                                            {user.FirstName + ' ' + user.LastName}
+                                                                                                         
+                                        </Typography> 
+                                    </ExpansionPanelSummary>
+                                    <ExpansionPanelDetails>
+                                        <div>
+                                        <Typography className={classes.title} variant="h5" color="inherit" noWrap>                                
+                                            Company name: {user.CompanyName} <br/>
+                                            Email: {user.EMail} <br/>
+                                            Phone: {user.Phone} <br/>
+                                            Trading role: {this.getUserTradingRole(user)} <br/>
+                                            UserRole: {this.getUserRole(user)} <br/>   
                                         </Typography>
-                                    </Button> :
-                                    <Button variant="contained" color="secondary" className={classes.button} style={{margin: '15px'}} >
-                                        <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-                                            Delete user 
-                                        </Typography>
-                                    </Button>
-                                }                               
-                                
-                                {fullInfoToggle && 
-                                    <ExpansionPanel>                                
-                                        Company name: {user.CompanyName}
-                                        Email: {user.EMail} <br/>
-                                        Phone: {user.Phone} <br/>
-                                        Trading role: {this.getUserTradingRole(user)} <br/>
-                                        UserRole: {this.getUserRole(user)} <br/>   
-                                    </ExpansionPanel>
-                                }  
-                                </Typography>                                                         
+                                        </div>
+                                        <div class="col-md-6 col-md-offset-3">
+                                            {user.Id === JSON.parse(localStorage.getItem("user")).Id ?
+                                            <Button variant="contained" color="secondary" className={classes.button} disabled title="Can't delete yourself">
+                                                <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+                                                    Can't delete yourself 
+                                                </Typography>
+                                            </Button> :
+                                            <Button variant="contained" color="secondary" className={classes.button} >
+                                                <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+                                                    Delete user 
+                                                </Typography>
+                                            </Button>
+                                            }  
+                                        </div>            
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>                                                          
                             </li>
                         )}                       
                     </ul>

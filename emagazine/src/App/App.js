@@ -10,6 +10,7 @@ import { HeaderAppBar } from '../components/Header'
 
 import { WelcomePage } from '../components/Pages/WelcomePage';
 import { LoginPage } from '../components/Pages/LoginPage';
+import { RegisterPage } from '../components/Pages/RegisterPage'
 import { AdminPage } from '../components/Pages/AdminPage';
 
 class App extends React.Component {
@@ -37,10 +38,11 @@ class App extends React.Component {
                             <Router history={history}>
                                 <div>
                                     <Route exact path="/" component={WelcomePage} />
-                                    {//need to change it to homepage
+                                    {//need to add a homepage
                                     //<Route path="/home" component={HomePage} />
                                     }
                                     <Route path="/login" component={LoginPage} />
+                                    <Route path="/register" component = {RegisterPage} />
                                     <AdminRoute exact path='/admin' component={AdminPage} />
                                 </div>
                             </Router>

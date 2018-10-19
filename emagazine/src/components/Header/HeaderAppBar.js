@@ -125,12 +125,21 @@ class HeaderAppBar extends React.Component {
 
   handleLoggingIn = () => {
     if(localStorage.getItem("user") === null){
-      return(<MenuItem onClick={() => history.push("/login")}> Login </MenuItem>);
+      return(
+        <div>
+          <MenuItem onClick={() => history.push("/register")}> Register </MenuItem>
+          <MenuItem onClick={() => history.push("/login")}> Login </MenuItem>
+        </div>
+      );
     }else{
       return(
         <div>
-          <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-          <MenuItem onClick={this.handleClose}>My account</MenuItem>
+          <MenuItem onClick={this.handleClose}>
+            Profile
+          </MenuItem>
+          <MenuItem onClick={this.handleClose}>
+            My account
+          </MenuItem>
           <MenuItem onClick={ () => {history.push("/"); this.props.dispatch(userActions.logout())} }> Logout </MenuItem>
         </div>);
     }

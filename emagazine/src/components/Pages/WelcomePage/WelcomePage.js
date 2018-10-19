@@ -26,7 +26,7 @@ class WelcomePage extends React.Component {
         const { classes, user } = this.props;       
         return (
             <div className="col-md-6 col-md-offset-3">
-                <Typography className={classes.title} variant="h3" color="inherit" noWrap>
+                <Typography className={classes.title} variant="h1" color="inherit" noWrap>
                     Hi  
                     {user ?
                         ", " + user.Username :
@@ -34,7 +34,11 @@ class WelcomePage extends React.Component {
                     }
                     !
                 </Typography>
-                <p>Welcome to our shop</p>
+                <p>
+                    <Typography className={classes.title} variant="h3" color="inherit" noWrap>
+                        Welcome to our shop
+                    </Typography>
+                </p>
             </div>
         );
     }

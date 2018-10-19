@@ -1,4 +1,0 @@
-export const pageConstants = {
-    CONTENT_IS_SHOWED: "CONTENT_IS_SHOWED",
-    CONTENT_IS_HIDDEN: "CONTENT_IS_HIDDEN"
-}
