@@ -1,0 +1,6 @@
+export const notificationConstants = {
+    SUCCESS: 'NOTIFICATION_SUCCESS',
+    ERROR: 'NOTIFICATION_ERROR',
+    WARNING: 'NOTIFICATION_WARNING',
+    CLEAR: 'NOTIFICATION_CLEAR'
+}

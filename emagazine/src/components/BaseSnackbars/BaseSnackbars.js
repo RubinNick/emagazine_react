@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 
+import { notificationActions } from '../../_actions'
+
 import Typography from '@material-ui/core/Typography';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -102,20 +104,17 @@ const variantIcon = {
   });
 
   class BaseSnackbars extends React.Component {
-    state = {
-      open: this.props.isOpen,
-    };
-  
-    handleClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-  
-      this.setState({ open: false });
+    constructor(props) {
+      super(props);
+
+    }
+
+    handleClose = () => {
+      this.props.dispatch(notificationActions.clear(false));
     };
   
     render() {
-      const { classes } = this.props;
+      const { classes, notification } = this.props;
   
       return (
         <div>
@@ -124,8 +123,8 @@ const variantIcon = {
               vertical: 'bottom',
               horizontal: 'left',
             }}
-            open={this.state.open}
-            autoHideDuration={6000}
+            open={notification.isOpen}
+            autoHideDuration={4000}
             onClose={this.handleClose}
           >
             <SnackbarContentWrapper
@@ -148,6 +147,10 @@ const variantIcon = {
   };
 
   function mapStateToProps(state) {
+    const { notification } = state;
+    return {
+      notification
+    }
   }
   
   const connectedBaseSnackbars = connect(mapStateToProps)(withStyles(styles2) (BaseSnackbars));

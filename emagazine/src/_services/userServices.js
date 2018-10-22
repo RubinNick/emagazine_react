@@ -78,7 +78,7 @@ function register(user) {
         body: JSON.stringify(user)
     };
  
-    return fetch(configBackend.apiUrl + '/users/register', requestOptions).then(handleResponse, handleError);
+    return fetch(configBackend.apiUrl + '/api/Account/Register', requestOptions).then(handleResponse, handleError);
 }
  
 function update(user) {

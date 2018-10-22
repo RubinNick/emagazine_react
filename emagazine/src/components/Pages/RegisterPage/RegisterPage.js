@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { userActions } from '../../../_actions';
+import { notificationActions } from '../../../_actions'
 
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -53,7 +54,6 @@ class RegisterPage extends React.Component{
     state = {
         activeStep: 0,
         skipped: new Set(),
-        role: 3,
         user: {
             email: null,
             confirmEmail: null,
@@ -62,7 +62,8 @@ class RegisterPage extends React.Component{
             firstName: null,
             lastName: null,
             phoneNumber: null,
-            userName: null
+            userName: null,
+            tradingRole: '3'
         }        
     }
 
@@ -86,18 +87,18 @@ class RegisterPage extends React.Component{
                                                 Choose your role, please: 
                                             </Typography>
                                         </FormLabel>
-                                        <RadioGroup  value={this.state.role} onClick={this.handleRoleChange}>
-                                            <FormControlLabel style={{fontSize: '500%'}} value={1} control={<Radio />} label={
+                                        <RadioGroup  value={this.state.user.tradingRole} onClick={this.handleRoleChange}>
+                                            <FormControlLabel style={{fontSize: '500%'}} value={'1'} control={<Radio />} label={
                                                 <Typography variant='h5'>
                                                     Supplier
                                                 </Typography>
                                             } />
-                                            <FormControlLabel value={2} control={<Radio />} label={
+                                            <FormControlLabel value={'2'} control={<Radio />} label={
                                                 <Typography variant='h5'>
                                                     Seller
                                                 </Typography>
                                             } />
-                                            <FormControlLabel value={3} control={<Radio />} label={
+                                            <FormControlLabel value={'3'} control={<Radio />} label={
                                                 <Typography variant='h5'>
                                                     Byuer
                                                 </Typography>
@@ -137,7 +138,7 @@ class RegisterPage extends React.Component{
                             label="Password"
                             className={this.props.classes.textField}
                             type="password"
-                            name="Password"
+                            name="password"
                             margin="normal"
                             variant="filled"
                             onChange={this.handleChange}
@@ -263,10 +264,14 @@ class RegisterPage extends React.Component{
         const { dispatch } = this.props;
         const { user } = this.state;
 
-        if(user.email !== user.confirmEmail){
-            <BaseSnackbars isOpen={true} snackbarVariant={'error'} snackbarMessage={'Emails does not match!'}/>
+        if(!user.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) ){
+            return dispatch(notificationActions.error(true, "Invalid email"));
+        }else if(user.email !== user.confirmEmail){
+            return dispatch(notificationActions.error(true, "Emails doesn't match"));
+        }else if(user.password.length < 6 ){
+            return dispatch(notificationActions.error(true, "Password must consist at least 6 charachers"));
         }else if(user.password !== user.confirmPassword){
-            return new Error("Passwords doesn't match");
+            return dispatch(notificationActions.error(true, "Passwords doesn't match"));
         }else{
             dispatch(userActions.register(user))
         }
@@ -277,17 +282,17 @@ class RegisterPage extends React.Component{
     }
 
     handleRoleChange = event => {
-        console.log(this.state);
         this.setState({
-            role: parseInt(event.target.value)
+            user: {
+                tradingRole: event.target.value
+            }
         });
-        console.log(this.state);
     }
 
     render() {
         const { classes } = this.props;
         const steps = this.getSteps();
-        const { activeStep } = this.state;
+        const { activeStep, openSnackbar, snackbarType, snackbarMessage } = this.state;
 
         return(
             <div className={classes.root}>
@@ -365,6 +370,10 @@ RegisterPage.propTypes = {
   };
 
 function mapStateToProps(state) {
+    const { registering } = state.registration;
+    return {
+        registering
+    };
 }
 
 const connectedRegisterPage = connect(mapStateToProps)(withStyles(styles)(RegisterPage));

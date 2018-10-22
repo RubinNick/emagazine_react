@@ -3,10 +3,11 @@ import { Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { history } from '../_helpers';
-import { alertActions } from '../_actions';
+import { alertActions, notificationActions } from '../_actions';
 import { PrivateRoute, AdminRoute } from '../_components';
 
-import { HeaderAppBar } from '../components/Header'
+import { HeaderAppBar } from '../components/Header';
+import { BaseSnackbars } from '../components/BaseSnackbars'
 
 import { WelcomePage } from '../components/Pages/WelcomePage';
 import { LoginPage } from '../components/Pages/LoginPage';
@@ -18,22 +19,25 @@ class App extends React.Component {
         super(props);
 
         const { dispatch } = this.props;
+
         history.listen((location, action) => {
             // clear alert on location change
             dispatch(alertActions.clear());
+            //clear notifications on location change
+            dispatch(notificationActions.clear(false));
         });
     }
 
     render() {
-        const { alert } = this.props;
+        const { notification } = this.props;
         return (
             <div>
                 <HeaderAppBar />
                 <div className="jumbotron">
                     <div className="container">
                         <div className="col-sm-8 col-sm-offset-2">
-                            {alert.message &&
-                                <div className={`alert ${alert.type}`}>{alert.message}</div>
+                            { notification.isOpen && 
+                                <BaseSnackbars isOpen={true} snackbarVariant={notification.snackbarVariant} snackbarMessage={notification.message}/>
                             }
                             <Router history={history}>
                                 <div>
@@ -55,9 +59,9 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { alert } = state;
+    const { notification } = state;
     return {
-        alert
+        notification
     };
 }
 
