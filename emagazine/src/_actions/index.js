@@ -1,3 +1,4 @@
 export * from './alertActions';
 export * from './userActions';
-export * from './notificationActions'
+export * from './notificationActions';
+export * from './productActions'

@@ -1,6 +1,5 @@
 import { authHeader, configBackend } from '../_helpers/index';
 import fetch from 'cross-fetch';
-//need to fix logout
 import { history } from '../_helpers/index';
 
 export const userService = {
@@ -103,7 +102,7 @@ function _delete(id) {
 
 function handleResponse(response) {
     return new Promise((resolve, reject) => {
-        if (response.ok) {
+        if (response.status === 200) {
             // return json if it was returned in the response
             var contentType = response.headers.get("content-type");
             if (contentType && contentType.includes("application/json")) {
@@ -122,7 +121,7 @@ function handleResponse(response) {
             }else{
                 // return error message from response body
             msg.then(text => reject(text));
-            }                                     
+            }                                          
         }
     });
 }

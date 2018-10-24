@@ -12,7 +12,9 @@ import { BaseSnackbars } from '../components/BaseSnackbars'
 import { WelcomePage } from '../components/Pages/WelcomePage';
 import { LoginPage } from '../components/Pages/LoginPage';
 import { RegisterPage } from '../components/Pages/RegisterPage'
-import { AdminPage } from '../components/Pages/AdminPage';
+import { AdminUsersPage } from '../components/Pages/AdminUsersPage';
+import { AdminProductsPage } from '../components/Pages/AdminProductsPage';
+import { AdminCreateProductPage } from '../components/Pages/AdminCreateProductPage'
 
 class App extends React.Component {
     constructor(props) {
@@ -47,7 +49,9 @@ class App extends React.Component {
                                     }
                                     <Route path="/login" component={LoginPage} />
                                     <Route path="/register" component = {RegisterPage} />
-                                    <AdminRoute exact path='/admin' component={AdminPage} />
+                                    <AdminRoute exact path='/adminUsers' component={AdminUsersPage} />
+                                    <AdminRoute exact path='/adminProducts' component={AdminProductsPage} />
+                                    <AdminRoute exact path='/createProduct' component={AdminCreateProductPage} />
                                 </div>
                             </Router>
                         </div>

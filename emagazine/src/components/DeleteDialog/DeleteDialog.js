@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -26,52 +25,59 @@ function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-class BaseDialog extends React.Component{
+class DeleteDialog extends React.Component{
     constructor(props){
         super(props)
+
+        this.state = {
+            open: this.props.isOpen,
+            dialogHeader: this.props.dialogHeader,
+            onDisagree: this.props.onDisagree,
+            onAgree: this.props.onAgree
+        }
     }
 
-    state = {
-        open: this.props.isOpen
-    }
-
-    handleClose = () => {
+    componentWillReceiveProps = (newProps) => {
         this.setState({
-            open: false
+            open: newProps.isOpen,
+            dialogHeader: newProps.dialogHeader,
+            onDisagree: newProps.onDisagree,
+            onAgree: newProps.onAgree
         })
     }
 
     render() {
         const { classes } = this.props;
+        const { open, dialogHeader, onDisagree, onAgree } = this.state;
         return(
             <div>
                 <Dialog
-                    open={this.state.open}
+                    open={ open }
                     TransitionComponent={Transition}
                     keepMounted
-                    onClose={this.handleClose}
+                    onClose={onDisagree}
                     aria-labelledby="alert-dialog-slide-title"
                     aria-describedby="alert-dialog-slide-description"
                 >
                     <DialogTitle id="alert-dialog-slide-title"> 
-                        <Typography className={classes.title} variant="h2" color="inherit" noWrap>
-                            {this.props.dialogHeader}
+                        <Typography className={classes.title} variant="h4" color="inherit" noWrap>
+                            Are you sure want to delete { dialogHeader } ?
                         </Typography>                      
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-slide-description">
-                            <Typography className={classes.title} variant="h4" color="inherit" noWrap>
-                                {this.props.dialogContent}
+                            <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+                                This action can not be undone.
                             </Typography>   
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button size="large" variant="contained" className={classes.button} onClick={this.handleClose}>
+                        <Button size="large" variant="contained" className={classes.button} onClick={onDisagree}>
                             <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                                 Cancel
                             </Typography>
                         </Button>
-                        <Button size="large" variant="contained" className={classes.button} color="secondary" onClick={this.handleClose}>
+                        <Button size="large" variant="contained" className={classes.button} color="secondary" onClick={onAgree}>
                             <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                                 Agree
                             </Typography>
@@ -83,12 +89,12 @@ class BaseDialog extends React.Component{
     }  
 }
 
-BaseDialog.propTypes = {
+DeleteDialog.propTypes = {
     classes: PropTypes.object.isRequired,
   };
 
 function mapStateToProps(state) {
 }
 
-const connectedBaseDialog = connect(mapStateToProps)(withStyles(styles) (BaseDialog));
-export { connectedBaseDialog as BaseDialog };
+const connectedDeleteDialog = connect(mapStateToProps)(withStyles(styles) (DeleteDialog));
+export { connectedDeleteDialog as DeleteDialog };

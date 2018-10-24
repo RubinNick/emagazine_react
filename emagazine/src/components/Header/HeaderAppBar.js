@@ -151,6 +151,7 @@ class HeaderAppBar extends React.Component {
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const isNavMenuOpen = Boolean(navMenuAnchorEl);
+    console.log(user);
 
     const renderMenu = (
       <Menu
@@ -205,9 +206,15 @@ class HeaderAppBar extends React.Component {
         open={isNavMenuOpen}
         onClose={this.handleNavMenuClose}
       >
-        <MenuItem onClick={this.handleClose}>Some page</MenuItem>
-        <MenuItem onClick={this.handleClose}>Another some page</MenuItem>
-        <MenuItem onClick={this.handleClose}>Another some page</MenuItem>
+        <MenuItem onClick={ () => (history.push('/home')) }>Home</MenuItem>
+        <MenuItem onClick={ () => (history.push('/shoppingCart')) }>Shopping Cart</MenuItem>
+        {
+          user && user.UserRole === "1" &&
+          <div>
+            <MenuItem onClick={ () => (history.push('/adminUsers')) }>Edit users</MenuItem>
+            <MenuItem onClick={ () => (history.push('/adminProducts')) }>Edit products</MenuItem>
+          </div>
+        }   
       </Menu>
     );
 

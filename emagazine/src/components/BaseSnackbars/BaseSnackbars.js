@@ -115,6 +115,7 @@ const variantIcon = {
   
     render() {
       const { classes, notification } = this.props;
+      console.log('snackbar props', this.props)
   
       return (
         <div>
@@ -129,10 +130,10 @@ const variantIcon = {
           >
             <SnackbarContentWrapper
               onClose={this.handleClose}
-              variant={this.props.snackbarVariant}
+              variant={notification.snackbarVariant}
               message={
                   <Typography className={classes.title} variant="h5" color="inherit" noWrap>
-                    {this.props.snackbarMessage}
+                    {notification.snackbarMessage}
                   </Typography>
             }
             />

@@ -1,1 +1,2 @@
-export * from './userServices.js';
+export * from './userServices';
+export * from './productService';

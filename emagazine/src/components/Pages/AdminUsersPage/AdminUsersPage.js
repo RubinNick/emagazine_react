@@ -38,7 +38,7 @@ const styles = theme => ({
     }
 })
 
-class AdminPage extends React.Component {
+class AdminUsersPage extends React.Component {
     constructor(props) {
         super(props);
 
@@ -50,6 +50,10 @@ class AdminPage extends React.Component {
     }
 
     handleDeleteDialogClose = () => {
+    }
+
+    handleDelete = (id) => {
+
     }
 
     getUserTradingRole(user) {
@@ -130,7 +134,7 @@ class AdminPage extends React.Component {
                                                     Can't delete yourself 
                                                 </Typography>
                                             </Button> :
-                                            <Button variant="contained" color="secondary" className={classes.button} >
+                                            <Button variant="contained" color="secondary" className={classes.button} onClick={ () => this.handleDelete(user.Id)}>
                                                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                                                     Delete user 
                                                 </Typography>
@@ -148,7 +152,7 @@ class AdminPage extends React.Component {
     }
 }
 
-AdminPage.propTypes = {
+AdminUsersPage.propTypes = {
     classes: PropTypes.object.isRequired,
   };
 
@@ -161,5 +165,5 @@ function mapStateToProps(state) {
     };
 }
 
-const connectedAdminPage = connect(mapStateToProps)(withStyles(styles) (AdminPage));
-export { connectedAdminPage as AdminPage };
+const connectedAdminUsersPage = connect(mapStateToProps)(withStyles(styles) (AdminUsersPage));
+export { connectedAdminUsersPage as AdminUsersPage };
