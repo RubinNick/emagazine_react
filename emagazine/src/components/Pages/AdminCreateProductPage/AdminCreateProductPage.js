@@ -57,7 +57,8 @@ class AdminCreateProductPage extends React.Component{
             type: null,
             description: null,
             count: null,
-            price: null
+            price: null,
+            image: null
         }        
     }
 
@@ -130,6 +131,17 @@ class AdminCreateProductPage extends React.Component{
                         className={this.props.classes.textField}
                         type="text"
                         name="price"
+                        margin="normal"
+                        variant="filled"
+                        onChange={this.handleChange}
+                        required
+                    />
+                    <TextField
+                        id="filled-price-input"
+                        label="Product price"
+                        className={this.props.classes.textField}
+                        type="text"
+                        name="image"
                         margin="normal"
                         variant="filled"
                         onChange={this.handleChange}

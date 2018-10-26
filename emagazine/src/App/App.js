@@ -14,7 +14,8 @@ import { LoginPage } from '../components/Pages/LoginPage';
 import { RegisterPage } from '../components/Pages/RegisterPage'
 import { AdminUsersPage } from '../components/Pages/AdminUsersPage';
 import { AdminProductsPage } from '../components/Pages/AdminProductsPage';
-import { AdminCreateProductPage } from '../components/Pages/AdminCreateProductPage'
+import { AdminCreateProductPage } from '../components/Pages/AdminCreateProductPage';
+import { ProfilePage } from '../components/Pages/ProfilePage'
 
 class App extends React.Component {
     constructor(props) {
@@ -52,6 +53,7 @@ class App extends React.Component {
                                     <AdminRoute exact path='/adminUsers' component={AdminUsersPage} />
                                     <AdminRoute exact path='/adminProducts' component={AdminProductsPage} />
                                     <AdminRoute exact path='/createProduct' component={AdminCreateProductPage} />
+                                    <Route path="/profile" component={ProfilePage} />
                                 </div>
                             </Router>
                         </div>

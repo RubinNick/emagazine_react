@@ -35,6 +35,9 @@ const styles = theme => ({
         float: 'right'
     },
     expansionPanel:{
+    },
+    buttonGrid: {
+        display: 'flex'
     }
 })
 
@@ -42,18 +45,31 @@ class AdminUsersPage extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            dialogOpen: false,
+            dialogHeader: null,
+            dialogTargetId: null,
+            currentOpenExpandId: null,
+            disableEdit: true
+        }
+
         this.getUserTradingRole = this.getUserTradingRole.bind(this);
         this.getUserRole = this.getUserRole.bind(this);
     }
 
-    handleDeleteDialogOpen = () => {
-    }
-
-    handleDeleteDialogClose = () => {
-    }
-
-    handleDelete = (id) => {
-
+    handleExpandSelected(id) {
+        this.state.currentOpenExpandId === id ?
+            this.setState({
+                currentOpenExpandId: null,
+                disableEdit: true
+            }) 
+        :
+            this.setState({
+                currentOpenExpandId: id
+            })
+            
+        this.props.dispatch(userActions.getById(id));
+            
     }
 
     getUserTradingRole(user) {
@@ -84,8 +100,44 @@ class AdminUsersPage extends React.Component {
         this.props.dispatch(userActions.getAll());
     }
 
+    handleExpandSelected(id) {
+        this.state.currentOpenExpandId === id ?
+            this.setState({
+                currentOpenExpandId: null,
+                disableEdit: true
+            }) 
+        :
+            this.setState({
+                currentOpenExpandId: id
+            })
+            
+        
+        this.props.dispatch(userActions.getById(id));
+    }
+
+    handleModalOpen(id, name){
+        this.setState({
+            dialogOpen: true,
+            dialogHeader: name,
+            dialogTargetId: id
+        })
+    }
+
+    handleModalClose(){
+        this.setState({
+            dialogOpen: false,
+            dialogHeader: null,
+            dialogTargetId: null
+        })
+    }
+
+    handleModalAgree() {
+        this.props.dispatch(userActions.delete(this.state.dialogTargetId))
+        this.handleModalClose();
+    }
+
     render() {
-        //const { fullInfoToggle } = this.state;
+        const { dialogOpen, dialogHeader, disableEdit, currentOpenExpandId  } = this.state;
         const { user, users, classes } = this.props;
 
         return (
@@ -102,51 +154,55 @@ class AdminUsersPage extends React.Component {
                     List of all registred users: 
                 </Typography>
                 <p></p>
-                {users.loading && <em>Loading users...</em>}
-                {users.error && "12321321312321321321321323213213213"
+                {users.error && "Something goes wrong. Try to reload page"
                 }
                 {users.items &&
-                    <ul className={classes.ul}>
-                        {users.items.map((user, index) =>
-                            <li key={index} data-id={user.Id} style={{width: '1000px'}}>
-                                <ExpansionPanel classes={classes.expansionPanel}>
-                                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        users.items.map((user, index) => {
+                            var isOpenExpand = currentOpenExpandId === user.Id;
+
+                            return (
+                                <ExpansionPanel key={index} data-id={user.Id} expanded={isOpenExpand} classes={classes.expansionPanel}>
+                                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} onClick={ () => this.handleExpandSelected(user.Id) }>
                                         <div></div>
                                         <Typography className={classes.title} variant="h4" color="inherit" noWrap>
-                                            {user.FirstName + ' ' + user.LastName}
+                                            {user.Username}
                                                                                                          
                                         </Typography> 
                                     </ExpansionPanelSummary>
                                     <ExpansionPanelDetails>
-                                        <div>
-                                        <Typography className={classes.title} variant="h5" color="inherit" noWrap>                                
-                                            Company name: {user.CompanyName} <br/>
-                                            Email: {user.EMail} <br/>
-                                            Phone: {user.Phone} <br/>
+                                    { user.userInfo &&
+                                        <Grid item xs={12}>
+                                        <Typography className={classes.title} variant="h5" color="inherit" noWrap> 
+                                            First Name: {user.userInfo.FirstName} <br />     
+                                            Last Name : {user.userInfo.LastName} <br />                        
+                                            Company name: {user.userInfo.CompanyName} <br/>
+                                            Email: {user.userInfo.EMail} <br/>
+                                            Phone: {user.userInfo.Phone} <br/>
                                             Trading role: {this.getUserTradingRole(user)} <br/>
                                             UserRole: {this.getUserRole(user)} <br/>   
                                         </Typography>
-                                        </div>
-                                        <div class="col-md-6 col-md-offset-3">
+                                        <Grid item xs={12} alignItems={"flex-end"} justify={"flex-end"} className={classes.buttonGrid}>
                                             {user.Id === JSON.parse(localStorage.getItem("user")).Id ?
                                             <Button variant="contained" color="secondary" className={classes.button} disabled title="Can't delete yourself">
                                                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                                                     Can't delete yourself 
                                                 </Typography>
                                             </Button> :
-                                            <Button variant="contained" color="secondary" className={classes.button} onClick={ () => this.handleDelete(user.Id)}>
+                                            <Button variant="contained" color="secondary" className={classes.button} 
+                                                onClick={ () => this.handleDelete(user.Id, user.Username)}>
                                                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                                                     Delete user 
                                                 </Typography>
                                             </Button>
                                             }  
-                                        </div>            
+                                        </Grid>
+                                        </Grid>
+                                    }          
                                     </ExpansionPanelDetails>
                                 </ExpansionPanel>                                                          
-                            </li>
-                        )}                       
-                    </ul>
-                }               
+                            )
+                        })
+                }                                     
             </div>
         );
     }

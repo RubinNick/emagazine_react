@@ -1,6 +1,8 @@
 import { userConstants } from '../_constants/index';
 
-export function users(state = {}, action) {
+const initialState = {items: [] };
+
+export function users(state = initialState, action) {
   switch (action.type) {
     case userConstants.GETALL_REQUEST:
       return {
@@ -14,6 +16,25 @@ export function users(state = {}, action) {
       return { 
         error: action.error
       };
+    case userConstants.GETBYID_REQUEST:
+      return {
+        ...state,
+          loading: true
+      };
+    case userConstants.GETBYID_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        items: state.items.map(user =>
+          user.Id === action.userInfo.Id
+            ? { ...user, userInfo: action.userInfo }
+            : user
+        )
+      };
+    case userConstants.GETBYID_FAILURE:
+      return {
+          error: action.error
+      }
     case userConstants.DELETE_REQUEST:
       // add 'deleting:true' property to user being deleted
       return {

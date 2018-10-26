@@ -1,6 +1,6 @@
 import { productConstants } from '../_constants/index';
-
-export function products(state = {}, action) {
+const initialState = {items: [] };
+export function products(state = initialState, action) {
   switch (action.type) {
     case productConstants.UPDATE_REQUEST:
       return {
@@ -34,6 +34,7 @@ export function products(state = {}, action) {
       }
     case productConstants.GETALL_REQUEST:
       return {
+        ...state,
         loading: true
       };
     case productConstants.GETALL_SUCCESS:
@@ -46,11 +47,18 @@ export function products(state = {}, action) {
       };
     case productConstants.GETBYID_REQUEST:
       return {
+        ...state,
           loading: true
       };
     case productConstants.GETBYID_SUCCESS:
       return {
-          items: action.product
+        ...state,
+        loading: false,
+        items: state.items.map(product =>
+          product.Id === action.productInfo.Id
+            ? { ...product, productInfo: action.productInfo }
+            :  product 
+        )
       };
     case productConstants.GETBYID_FAILURE:
       return {
@@ -69,7 +77,7 @@ export function products(state = {}, action) {
     case productConstants.DELETE_SUCCESS:
       // remove deleted user from state
       return {
-        items: state.items.filter(product => product.id !== action.id)
+        items: state.items.filter(product => product.Id !== action.id)
       };
     case productConstants.DELETE_FAILURE:
       // remove 'deleting:true' property and add 'deleteError:[error]' property to product 

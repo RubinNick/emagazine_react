@@ -70,7 +70,7 @@ class AdminProductsPage extends React.Component {
             dialogOpen: false,
             dialogHeader: null,
             dialogTargetId: null,
-            expandCurrent: false,
+            currentOpenExpandId: null,
             disableEdit: true,
             editProductState: {
                 id: null,
@@ -84,14 +84,42 @@ class AdminProductsPage extends React.Component {
 
         this.handleModalAgree = this.handleModalAgree.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
+        this.handleUpdateInfo = this.handleUpdateInfo.bind(this);
     }
 
     componentDidMount() {
-        this.props.dispatch(productActions.getAll());
+        this.props.dispatch(productActions.getAll())
     }
 
-    handleExpandSelected(event, id) {
-        this.props.dispatch(productActions.getById(id));
+    handleCancelChange() {
+        this.setState({
+            disableEdit: true
+        })
+    }
+
+    handleEditChange = event => {
+        const { name, value } = event.target;
+        this.setState({ editProductState: {...this.state.editProductState, [name]: value }});
+    }
+
+    handleUpdateProduct() {
+        this.props.dispatch(productActions.update(this.state.editProductState))
+    }
+
+    handleExpandSelected(id) {
+        if(this.state.currentOpenExpandId === id){
+            this.setState({
+                currentOpenExpandId: null,
+                disableEdit: true
+            }) 
+        }else{
+            this.setState({
+                currentOpenExpandId: id,
+                disableEdit: true
+            })
+            
+            this.props.dispatch(productActions.getById(id));
+        }    
     }
 
     handleModalOpen(id, name){
@@ -115,19 +143,28 @@ class AdminProductsPage extends React.Component {
         this.handleModalClose();
     }
 
-    handleEdit(productId) {
+    handleEdit(product) {
         this.setState({
             disableEdit: false,
             editProductState: {
-                id: productId
+                id: product.Id,
+                name: product.Name,
+                type: product.productInfo.Type,
+                description: product.productInfo.Description,
+                count: product.productInfo.Count,
+                price: product.productInfo.Price
             }
         })
     }
 
+    handleUpdateInfo(){
+        this.props.dispatch(productActions.update(this.state.editProductState));
+    }
+
     render() {
         const { user, products, classes } = this.props;
-        const { dialogOpen, dialogHeader, disableEdit  } = this.state;
-
+        const { dialogOpen, dialogHeader, disableEdit, currentOpenExpandId  } = this.state;     
+        console.log('state', this.state);
         return (
             <Grid className={classes.root}>
                 <DeleteDialog isOpen={ dialogOpen } dialogHeader = { dialogHeader } onDisagree={ this.handleModalClose } onAgree ={ this.handleModalAgree }/>
@@ -140,58 +177,71 @@ class AdminProductsPage extends React.Component {
                 </Typography>
                 <p></p>
                 <Typography className={classes.title} variant="h3" color="inherit" noWrap>
-                    List of all products: 
+                    List of all products:
                 </Typography>
-                <p></p>
-                {products.loading && <em> Loading products... </em>}
                 {products.error && 
                     <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                         Some error ocured due to: {products.error}
                     </Typography>
                 }
-                {products.items &&
-                    <ul className={classes.ul}>
-                        {products.items.map((product, index) =>
-                            <li key={index} data-id={product.Id} >
-                                <ExpansionPanel classes={classes.expansionPanel} onClick={ (event) => this.handleExpandSelected(event, product.Id)}>
-                                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                {products.items && 
+                        products.items.map((product, index) => {
+                            var isOpenExpand = currentOpenExpandId === product.Id;
+
+                            return (
+                                <ExpansionPanel key={index} data-id={product.Id} classes={classes.expansionPanel} expanded={isOpenExpand}>
+                                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} onClick={ () => this.handleExpandSelected(product.Id)}>
                                         <Typography className={classes.title} variant="h4" color="inherit" noWrap>
-                                            {product.Name}<br />
-                                            Only {product.Price} $ per count!<br />                                                               
+                                            {product.Name}<br />                                                            
                                         </Typography> 
                                     </ExpansionPanelSummary>
                                     <ExpansionPanelDetails>
-                                        <Grid item xs={12}>
-                                            <Grid item xs={6}>
-                                                <Typography className={classes.title} variant="h5" color="inherit">
-                                                    Product type: 
-                                                </Typography>
-                                            </Grid> 
-                                            <Grid item xs={6}>
-                                                <Input className={classes.input} value={ product.Type } disabled={ disableEdit } /><br />
+                                        {
+                                            product.productInfo &&            
+                                            <Grid item xs={12}>
+                                                <Grid item xs={6}>
+                                                    <Typography className={classes.title} variant="h5" color="inherit">
+                                                        Product type: 
+                                                    </Typography>
+                                                </Grid> 
+                                                <Grid item xs={6}>
+                                                    <Input className={classes.input} name={'type'} defaultValue={ product.productInfo.Type } 
+                                                    disabled={ disableEdit } onChange={ (event) => this.handleEditChange(event)} /><br />
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <Typography className={classes.title} variant="h5" color="inherit">      
+                                                        We have:  
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <Input className={classes.input} name={'count'} defaultValue={ product.productInfo.Count } 
+                                                    disabled={ disableEdit } onChange={ (event) => this.handleEditChange(event)} /><br />  
+                                                </Grid> 
+                                                <Grid item xs={6}>
+                                                    <Typography className={classes.title} variant="h5" color="inherit">      
+                                                        Only for ($):  
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <Input className={classes.input} name={'price'} defaultValue={ product.productInfo.Price } 
+                                                    disabled={ disableEdit } onChange={ (event) => this.handleEditChange(event)} /><br />  
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <Typography className={classes.title} variant="h5" color="inherit">                     
+                                                        Additional info: 
+                                                    </Typography>
+                                                </Grid> 
+                                                <Grid item xs={6}>
+                                                    <Input className={classes.input} name={'description'} defaultValue={ product.productInfo.Description } 
+                                                    disabled={ disableEdit } onChange={ (event) => this.handleEditChange(event)} /><br />    
+                                                </Grid>                                   
                                             </Grid>
-                                            <Grid item xs={6}>
-                                                <Typography className={classes.title} variant="h5" color="inherit">      
-                                                    We have:  
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <Input className={classes.input} value={ product.Count } disabled={ disableEdit } /><br />   
-                                            </Grid> 
-                                            <Grid item xs={6}>
-                                                <Typography className={classes.title} variant="h5" color="inherit">                     
-                                                    Additional info: 
-                                                </Typography>
-                                            </Grid> 
-                                            <Grid item xs={6}>
-                                                <Input className={classes.input} value={ product.Description } disabled={ disableEdit } /><br />    
-                                            </Grid>                                   
-                                        </Grid>
+                                        }
                                         {
                                             disableEdit ?
                                             <Grid item xs={12} alignItems={"flex-end"} justify={"flex-end"} className={classes.buttonGrid}>
                                                 <Button variant="contained" color="default" className={classes.button} title='edit product'
-                                                    onClick={() => this.handleEdit(product.Id) }>
+                                                    onClick={() => this.handleEdit(product) }>
                                                     <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                                                         Edit product 
                                                     </Typography>
@@ -205,13 +255,14 @@ class AdminProductsPage extends React.Component {
                                             </Grid> 
                                             :
                                             <Grid item xs={12} alignItems={"flex-end"} justify={"flex-end"} className={classes.buttonGrid}>
-                                                <Button variant="contained" color="default" className={classes.button} title='edit product'>
+                                                <Button variant="contained" color="default" className={classes.button} title='edit product'
+                                                    onClick={ () => this.handleUpdateInfo()}>
                                                     <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                                                         Save changes 
                                                     </Typography>
                                                 </Button> 
-                                                <Button data-id={product.Id} variant="contained" color="secondary" className={classes.button} onClick={() => 
-                                                    this.handleModalOpen(product.Id, product.Name)}>
+                                                <Button data-id={product.Id} variant="contained" color="secondary" className={classes.button} 
+                                                    onClick={ () => this.handleExpandSelected(product.Id)}>
                                                     <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                                                         Cancel 
                                                     </Typography>
@@ -220,10 +271,10 @@ class AdminProductsPage extends React.Component {
                                         }
                                                 
                                     </ExpansionPanelDetails>
-                                </ExpansionPanel>                                                          
-                            </li>
-                        )}                       
-                    </ul>
+                                </ExpansionPanel>     
+                            )
+                        }                                                      
+                        )                       
                 }  
                 <Button variant="fab" color="secondary" className={classes.button} title='add product' onClick={ () => (history.push('/createProduct'))} >
                     <AddIcon />

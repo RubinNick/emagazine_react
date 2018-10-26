@@ -49,7 +49,7 @@ function update(product) {
         body: JSON.stringify(product)
     };
  
-    return fetch(configBackend.apiUrl + '/api/Product/Update/' + product.id, requestOptions).then(handleResponse, handleError);
+    return fetch(configBackend.apiUrl + '/api/Product/Put', requestOptions).then(handleResponse, handleError);
 }
  
 // prefixed function name with underscore because delete is a reserved word in javascript

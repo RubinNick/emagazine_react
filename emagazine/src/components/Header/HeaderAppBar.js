@@ -134,7 +134,7 @@ class HeaderAppBar extends React.Component {
     }else{
       return(
         <div>
-          <MenuItem onClick={this.handleClose}>
+          <MenuItem onClick={() => history.push('/profile')}>
             Profile
           </MenuItem>
           <MenuItem onClick={this.handleClose}>
@@ -151,7 +151,6 @@ class HeaderAppBar extends React.Component {
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const isNavMenuOpen = Boolean(navMenuAnchorEl);
-    console.log(user);
 
     const renderMenu = (
       <Menu
