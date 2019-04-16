@@ -12,13 +12,13 @@ export function notification(state = {}, action) {
         return {
           isOpen: action.open,
           snackbarVariant: 'error',
-          message: action.message
+          snackbarMessage: action.message
         };
       case notificationConstants.WARNING:
         return {
             isOpen: action.open,
             snackbarVariant: 'warning',
-            message: action.message
+            snackbarMessage: action.message
         };
       case notificationConstants.CLEAR:
         return {

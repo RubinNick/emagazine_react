@@ -34,7 +34,6 @@ export function products(state = initialState, action) {
       }
     case productConstants.GETALL_REQUEST:
       return {
-        ...state,
         loading: true
       };
     case productConstants.GETALL_SUCCESS:
@@ -45,20 +44,32 @@ export function products(state = initialState, action) {
       return { 
         error: action.error
       };
-    case productConstants.GETBYID_REQUEST:
+    case productConstants.GETDETAILS_REQUEST:
       return {
         ...state,
           loading: true
       };
-    case productConstants.GETBYID_SUCCESS:
+    case productConstants.GETDETAILS_SUCCESS:
       return {
         ...state,
         loading: false,
         items: state.items.map(product =>
-          product.Id === action.productInfo.Id
-            ? { ...product, productInfo: action.productInfo }
-            :  product 
-        )
+                product.Id === action.productInfo.Id
+                  ? { ...product, productInfo: action.productInfo }
+                  :  product
+          )
+      };
+    case productConstants.GETDETAILS_FAILURE:
+      return {
+          error: action.error
+      }
+    case productConstants.GETBYID_REQUEST:
+      return {
+          loading: true
+      };
+    case productConstants.GETBYID_SUCCESS:
+      return {
+        items:  action.productInfo
       };
     case productConstants.GETBYID_FAILURE:
       return {

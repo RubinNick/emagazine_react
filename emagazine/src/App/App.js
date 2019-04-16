@@ -15,7 +15,9 @@ import { RegisterPage } from '../components/Pages/RegisterPage'
 import { AdminUsersPage } from '../components/Pages/AdminUsersPage';
 import { AdminProductsPage } from '../components/Pages/AdminProductsPage';
 import { AdminCreateProductPage } from '../components/Pages/AdminCreateProductPage';
-import { ProfilePage } from '../components/Pages/ProfilePage'
+import { ProfilePage } from '../components/Pages/ProfilePage';
+import { HomePage } from '../components/Pages/HomePage';
+import { ProductPage } from '../components/Pages/ProductPage';
 
 class App extends React.Component {
     constructor(props) {
@@ -54,6 +56,10 @@ class App extends React.Component {
                                     <AdminRoute exact path='/adminProducts' component={AdminProductsPage} />
                                     <AdminRoute exact path='/createProduct' component={AdminCreateProductPage} />
                                     <Route path="/profile" component={ProfilePage} />
+                                    <Route path="/home" component={HomePage} />
+                                    <Route path="/product/:id" render={(router) => {
+                                        const { id } = router.match.params;
+                                        return <ProductPage id={id} />}} />
                                 </div>
                             </Router>
                         </div>

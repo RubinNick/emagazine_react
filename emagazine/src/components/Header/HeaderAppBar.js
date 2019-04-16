@@ -225,7 +225,7 @@ class HeaderAppBar extends React.Component {
               <MenuIcon />
             </IconButton>
             <IconButton color="inherit">
-              <Typography className={classes.title} variant="h3" color="inherit" noWrap onClick={ () => (history.push('/')) }>
+              <Typography className={classes.title} variant="h3" color="inherit" noWrap onClick={ () => (history.push('/home')) }>
                 E-magazine
               </Typography>
             </IconButton>

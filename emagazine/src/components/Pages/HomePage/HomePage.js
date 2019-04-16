@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { history } from '../../../_helpers';
 
 import { productActions } from '../../../_actions';
 
@@ -10,8 +11,8 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
-import tileData from './tileData';
+import AddCircle from '@material-ui/icons/AddCircle';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
     root: {
@@ -28,33 +29,56 @@ const styles = theme => ({
     icon: {
       color: 'rgba(255, 255, 255, 0.54)',
     },
+    gridTileContent: {
+        width: '25%'
+    }
   });
 
 class HomePage extends React.Component{
 
 
+    componentDidMount() {
+        this.props.dispatch(productActions.getAll())
+    }
+
+    handleOpenProductPage(id){
+        history.push('/product/' + id)
+    }
+
     render(){
-        const { products } = this.props
+        const { classes, products } = this.props;
+        const imageFromBase64 = 'data:image/jpeg;base64,';
 
         return(
             <div className={classes.root}>
-                <GridList cellHeight={180} className={classes.gridList}>
+                <GridList cellHeight={180} >
                     <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-                        <ListSubheader component="div">December</ListSubheader>
+                        <ListSubheader component="div">
+                            <Typography align='center'>
+                                Availible products
+                            </Typography>
+                        </ListSubheader>
                     </GridListTile>
-                    {tileData.map(tile => (
-                    <GridListTile key={tile.img}>
-                        <img src={tile.img} alt={tile.title} />
-                        <GridListTileBar
-                        title={tile.title}
-                        subtitle={<span>by: {tile.author}</span>}
-                        actionIcon={
-                            <IconButton className={classes.icon}>
-                            <InfoIcon />
-                            </IconButton>
-                        }
-                        />
-                    </GridListTile>
+                    {
+                        products.loading &&
+                        <Typography>
+                            Loading products...
+                        </Typography>
+                    }
+                    {products.items &&
+                        products.items.map(product => (
+                        <GridListTile key={product.Id} style={{width: '25%'}}>
+                            <img src={imageFromBase64 + product.Image} />
+                            <GridListTileBar
+                            onClick={() => this.handleOpenProductPage(product.Id)}
+                            title={product.Name}
+                            actionIcon={
+                                <IconButton className={classes.icon}>
+                                <AddCircle/>
+                                </IconButton>
+                            }
+                            />
+                        </GridListTile>
                     ))}
                 </GridList>
             </div>

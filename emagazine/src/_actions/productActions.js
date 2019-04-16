@@ -7,6 +7,7 @@ export const productActions = {
     create,
     update,
     getAll,
+    getDetails,
     getById,
     delete: _delete
 };
@@ -80,6 +81,28 @@ function getAll() {
     function request() { return { type: productConstants.GETALL_REQUEST } }
     function success(products) { return { type: productConstants.GETALL_SUCCESS, products } }
     function failure(error) { return { type: productConstants, error } }
+}
+
+function getDetails(id){
+    return dispatch => {
+        dispatch(request(id));
+
+        productService.getById(id)
+            .then(
+                productInfo => {
+                    dispatch(success(productInfo))
+                },
+                error => {
+                    dispatch(failure(error));
+                    dispatch(alertActions.error(error));
+                    dispatch(notificationActions.error(error))
+                }
+            )
+    };
+
+    function request(id) { return { type: productConstants.GETDETAILS_REQUEST, id } }
+    function success(productInfo) { return { type: productConstants.GETDETAILS_SUCCESS, productInfo } }
+    function failure(error) { return { type: productConstants.GETDETAILS_FAILURE, error } }
 }
 
 function getById(id){

@@ -6,17 +6,11 @@ import PropTypes from 'prop-types';
 import { productActions } from '../../../_actions';
 import { notificationActions } from '../../../_actions'
 
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import TextField from '@material-ui/core/TextField';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -48,23 +42,54 @@ const styles = theme => ({
         marginRight: theme.spacing.unit,
         width: '340px'
       },
+    inputFile: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        width: '340px',
+        display: 'none'
+      },
+    rightIcon: {
+        marginLeft: theme.spacing.unit,
+    },
   });
 
 class AdminCreateProductPage extends React.Component{
-    state = {
-        product: {
-            name: null,
-            type: null,
-            description: null,
-            count: null,
-            price: null,
-            image: null
-        }        
+    constructor(props){
+        super(props)
+
+        this.state = {
+            product: {
+                name: null,
+                type: null,
+                description: null,
+                count: null,
+                price: null,
+                image: null
+            }        
+        }
+
+        this.imageInput = React.createRef()
     }
+    
 
     handleChange = event => {
         const { name, value } = event.target;
+        name === "image" ?
+        this.handleImageString(event, name) :
         this.setState({ product: {...this.state.product, [name]: value }});
+    }
+
+    handleImageString(event, name){
+        let reader = new FileReader();
+        if (event.target.files && event.target.files.length > 0) {
+            let file = event.target.files[0];
+            let imageData = reader.readAsDataURL(file);
+
+            reader.onload = (result) => {
+                console.log('image', result.currentTarget.result.substring(22));
+                this.setState({ product: {...this.state.product, [name]: result.currentTarget.result.substring(22) }})
+            }
+        }
     }
 
     handleCreateRequest = () => {
@@ -137,16 +162,18 @@ class AdminCreateProductPage extends React.Component{
                         required
                     />
                     <TextField
-                        id="filled-price-input"
-                        label="Product price"
+                        id="filled-image-input"
+                        label="Product image"
                         className={this.props.classes.textField}
-                        type="text"
+                        type="file"
                         name="image"
                         margin="normal"
                         variant="filled"
+                        ref={this.imageInput}
                         onChange={this.handleChange}
                         required
-                    />
+                    >
+                    </TextField>
                 </div>
                 <Button variant="contained" color="primary" className={classes.button} onClick={ this.handleCreateRequest } >
                     <Typography className={classes.title} variant="h6" color="inherit" noWrap>

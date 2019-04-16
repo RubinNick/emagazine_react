@@ -58,6 +58,10 @@ const styles = theme => ({
     },
     buttonGrid: {
         display: 'flex'
+    },
+    image: {
+        maxWidth: '350px', 
+        maxHeight: '350px'
     }
     
 })
@@ -118,7 +122,7 @@ class AdminProductsPage extends React.Component {
                 disableEdit: true
             })
             
-            this.props.dispatch(productActions.getById(id));
+            this.props.dispatch(productActions.getDetails(id));
         }    
     }
 
@@ -164,7 +168,7 @@ class AdminProductsPage extends React.Component {
     render() {
         const { user, products, classes } = this.props;
         const { dialogOpen, dialogHeader, disableEdit, currentOpenExpandId  } = this.state;     
-        console.log('state', this.state);
+        const imageFromBase64 = 'data:image/jpeg;base64,';
         return (
             <Grid className={classes.root}>
                 <DeleteDialog isOpen={ dialogOpen } dialogHeader = { dialogHeader } onDisagree={ this.handleModalClose } onAgree ={ this.handleModalAgree }/>
@@ -199,6 +203,15 @@ class AdminProductsPage extends React.Component {
                                         {
                                             product.productInfo &&            
                                             <Grid item xs={12}>
+                                                {
+                                                    product.productInfo.Image !== null &&
+                                                    <Grid item xs={6}>
+                                                        <Typography className={classes.title} variant="h5" color="inherit">
+                                                            Preview:  
+                                                        </Typography>
+                                                        <img src={imageFromBase64 + product.productInfo.Image} className={classes.image}/>
+                                                    </Grid>
+                                                }
                                                 <Grid item xs={6}>
                                                     <Typography className={classes.title} variant="h5" color="inherit">
                                                         Product type: 
